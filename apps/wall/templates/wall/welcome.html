@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <title>Welcome Page</title>
+</head>
+<body>
+    <div class="container">
+        <h1>
+            <span>CodingDojo Wall</span>
+            <span class="col-sm-1">Welcome! {{request.session.username}}</span>
+            <a href="/log_off">Log off</a>
+        </h1>
+        <hr>
+        <form action="/post_message" method="POST">
+            {% csrf_token %}
+            Post a Message
+            <br>
+            <textarea placeholder = 'write a message' name ='message' class="form-control"></textarea><br>
+            <input type='submit' value = 'Post a message'>
+        </form>  
+        </form>
+
+        {% for msg in messageList %}
+            <h4> {{msg.poster.name}}-{{msg.created_at}}</h4><br>
+            <p>{{msg.message}}</p><br>
+            {% for comment in msg.comments.all %}
+                <h6>{{comment.poster.name}} - {{msg.created_at}}</h6><br>
+                <p>{{comment.opinions}}</p><br>
+            {% endfor %}
+            <form action='/post_comment' method='POST'>
+                {% csrf_token %}
+                <textarea placeholder='write a comment' name='comment' class="form-control"></textarea><br>
+                <input type='hidden' value='{{msg.id}}' name='mesID'>
+                <input type='submit' value='Post a comment'>
+            </form>            
+        {% endfor %}
+    </div>
+</body>
+</html>
